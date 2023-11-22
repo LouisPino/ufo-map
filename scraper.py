@@ -13,8 +13,9 @@ except FileNotFoundError:
     data_dict = {"data": []}
 
 
-for i in range(20):
-    html = requests.get(url + str(i + 179115))
+for i in range(100):
+    print(i)
+    html = requests.get(url + str(i + 179015))
     soup = BeautifulSoup(html.content, 'html.parser')
     new_entry = str(soup.find("div", class_="content-area"))
     new_dict = {
@@ -28,7 +29,7 @@ for i in range(20):
         "posted": new_entry.split("<b>Posted:</b> ")[1].split("<br/>")[0],
         "characteristics": new_entry.split("<b>Characteristics:</b> ")[1].split("<p style=\"color: white;")[0].replace("<br/>", "").replace("<br>", "") if "Characteristics" in new_entry else ""    
         }
-    if new_dict["occurred"] != "":
+    if new_dict["occurred"] != "" and new_dict["location"] != "":
         data_dict["data"].append(new_dict)
 
 
@@ -40,5 +41,5 @@ with open(file_path, "w") as outfile:
     
 # to do:
 # get pictures
-# filter out entries with very little info (no location or description or date)
-# add checks to split statements so it doesn't crash when an entry doesn't have location details or another field
+# miht need to add checks to all fields
+# add try catch (whatever python equiv is) before trying to run on large set
