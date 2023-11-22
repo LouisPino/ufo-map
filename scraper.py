@@ -3,8 +3,8 @@ import json
 import requests
 
 url = "https://nuforc.org/sighting/?id="
-file_path = "ufo-data.json"
-# file_path = "test.json"
+# file_path = "ufo-data.json"
+file_path = "test.json"
 
 
 try:
@@ -14,23 +14,25 @@ except FileNotFoundError:
     data_dict = {"data": []}
 
 
-for i in range(100):
+for i in range(1):
     print(i)
     html = requests.get(url + str(i + 179035))
     soup = BeautifulSoup(html.content, 'html.parser')
     new_entry = str(soup.find("div", class_="content-area"))
     new_imgs = soup.find_all("img")
     img_links = []
-    new_vids = soup.find_all("video")
-    vid_links = []
+    id = str(soup.find("h1")).split("NUFORC Sighting ")[1].split("</h1>")[0]
     for i in range(1, len(new_imgs)):
         img = str(new_imgs[i]).split("src=")[1].split('"')[1]
         img_links.append(img)
+    # new_vids = soup.find_all("video")
+    # vid_links = []
     # for i in range(0, len(new_vids)):
     #     vid = str(new_vids[i]).split("src=")[1].split('"')[1]
     #     print(vid)
     #     vid_links.append(vid)
     new_dict = {
+        "id": id,
         "occurred": new_entry.split("<b>Occurred:</b> ")[1].split(" Local<br/>")[0],
         "location": new_entry.split("<b>Location:</b> ")[1].split("<br/>")[0],
         "location_details": new_entry.split("details:</b> ")[1].split("<br/>")[0] if "Location details" in new_entry else "",
@@ -57,5 +59,5 @@ with open(file_path, "w") as outfile:
 # to do:
 # get videos
 # might need to add checks to all fields
-# Need some way to check for if it already exists when scraping (probably add an ID field and get/check against that)
+# Find efficient way to check if ID is already in list (maybe keep it sorted then binary search?)
 # add try catch (whatever python equiv is) before trying to run on large set
