@@ -34,3 +34,10 @@ for i in range(3):
 # Write the updated dictionary back to the file in proper JSON format
 with open(file_path, "w") as outfile:
     json.dump(data_dict, outfile, indent=4)   
+    
+    
+    
+# to do:
+# get pictures
+# filter out entries with very little info (no location or description or date)
+# add checks to split statements so it doesn't crash when an entry doesn't have location details or another field
