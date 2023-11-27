@@ -7,6 +7,7 @@ import asyncio
 import requests
 
 LAST_ID = 179135
+PREV_ID = 94701
 
 base_url = "https://nuforc.org/sighting/?id="
 # file_path = "ufo-data.json"
@@ -47,7 +48,7 @@ async def fetch_data(session, id, retry_count=3, delay=1):
                     raise e  # Reraise the exception after the last retry
 
 async def main():
-    count = 41701
+    count = PREV_ID
     while count < LAST_ID :
         async with aiohttp.ClientSession() as session:
             # Fetch data for each ID concurrently
