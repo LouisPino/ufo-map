@@ -47,6 +47,7 @@ async def fetch_data(session, id, retry_count=3, delay=1):
                 else:
                     raise e  # Reraise the exception after the last retry
 
+
 async def main():
     count = PREV_ID
     while count < LAST_ID :
