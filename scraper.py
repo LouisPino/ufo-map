@@ -7,7 +7,7 @@ import asyncio
 import requests
 
 LAST_ID = 179135
-PREV_ID = 136904
+PREV_ID = 149904
 
 base_url = "https://nuforc.org/sighting/?id="
 # file_path = "ufo-data.json"
