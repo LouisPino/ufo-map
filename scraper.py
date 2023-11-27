@@ -113,4 +113,5 @@ asyncio.run(main())
 # to do:
 # get videos
 # Find efficient way to check if ID is already in list (maybe keep it sorted then binary search?)
-# # Some don't have a characteristics title but do have descriptions, get this somehow
+# Some don't have a characteristics title but do have descriptions, get this somehow
+# Missed a lot of <img> tags
