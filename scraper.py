@@ -3,18 +3,16 @@ import json
 import aiohttp
 from aiohttp import ClientError
 import asyncio
-# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) FORWINDOWS ONLY
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) FOR WINDOWS ONLY
 import requests
 
 LAST_ID = 179135
-PREV_ID = 149904
+PREV_ID = 179135
 
 base_url = "https://nuforc.org/sighting/?id="
-# file_path = "ufo-data.json"
-file_path = "Half.json"
-# file_path = "ufo-data-long-test.json"
+file_path = "Scrape2.json"
 
-
+# open specified json file as data_dict
 try:
     with open(file_path, "r") as file:
         data_dict = json.load(file)
@@ -23,7 +21,7 @@ except FileNotFoundError:
 
 
 
-
+# Function to collect html from one page
 async def fetch_data(session, id, retry_count=3, delay=1):
     url = f"https://nuforc.org/sighting/?id={id}"
     for attempt in range(retry_count):
@@ -35,10 +33,8 @@ async def fetch_data(session, id, retry_count=3, delay=1):
                 elif 'text/html' in content_type:
                     html_content = await resp.text()
                     soup = BeautifulSoup(html_content, 'html.parser')
-                    # Parse HTML as needed
                     return soup
                 else:
-                    # Handle other content types or raise an error
                     raise ValueError(f'Unexpected content type: {content_type}')
         except (ClientError, asyncio.TimeoutError) as e:
                 if attempt < retry_count - 1:
@@ -47,16 +43,16 @@ async def fetch_data(session, id, retry_count=3, delay=1):
                 else:
                     raise e  # Reraise the exception after the last retry
 
-
+# Loop through all pages, fetching and writing 1000 at a time
 async def main():
     count = PREV_ID
     while count < LAST_ID :
         async with aiohttp.ClientSession() as session:
-            # Fetch data for each ID concurrently
+            # Fetch data for each ID from current to current+1000
             results = await asyncio.gather(
                 *[fetch_data(session, id) for id in range(count, count + 1000)]
             )
-            # Process results as needed
+            # Process results after all fetches are complete
             for idx, result in enumerate(results):
                     print(idx)
                     new_entry = str(result.find("div", class_="content-area"))
@@ -75,6 +71,8 @@ async def main():
                     #     vid = str(new_vids[i]).split("src=")[1].split('"')[1]
                     #     print(vid)
                     #     vid_links.append(vid)
+                    
+                    # create new dict with all the info from the html
                     try:
                         new_dict = {
                             "id": id,
@@ -90,12 +88,14 @@ async def main():
                             "images": img_links,
                             # "videos": vid_links,
                             }
+                    # ignore and move on if something goes wrong
                     except:
                         continue
+                    # If it has an occurred date and location, add it to array of dicts
                     if new_dict["occurred"] != "" and new_dict["location"] != ", , ":
                         data_dict["data"].append(new_dict)
-                    # Write the updated dictionary back to the file in proper JSON format
-                    
+
+        #   Write entire data_dict object to json (including the original data from import)
         with open(file_path, "w") as outfile:
             json.dump(data_dict, outfile, indent=4)   
         count+=1000
