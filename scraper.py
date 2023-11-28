@@ -4,7 +4,6 @@ import aiohttp
 from aiohttp import ClientError
 import asyncio
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) #FOR WINDOWS ONLY
-import requests
 
 LAST_ID = 179135
 PREV_ID = 165557

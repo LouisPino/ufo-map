@@ -55,9 +55,12 @@ data_objs = data["data"]
 # print(img_count)
 
 # Get IDs of sightings with videos
-vid_ids = []
-for obj in data_objs:
-    if  "#museai-player" in obj["characteristics"]:
-        vid_ids.append(obj["id"])
-with open("vid_list.txt", "w") as outfile:
-    json.dump(vid_ids, outfile, indent=4)   
+# vid_ids = []
+# for obj in data_objs:
+#     if  "#museai-player" in obj["characteristics"]:
+#         vid_ids.append(obj["id"])
+# print(vid_ids)
+
+# write to file if needed
+# # with open("vid_list.txt", "w") as outfile:
+# #     json.dump(vid_ids, outfile, indent=4)   
