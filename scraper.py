@@ -6,7 +6,7 @@ import asyncio
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) #FOR WINDOWS ONLY
 
 LAST_ID = 179135
-PREV_ID = 165557
+PREV_ID = 0
 
 base_url = "https://nuforc.org/sighting/?id="
 file_path = "test.json"
@@ -45,11 +45,11 @@ async def fetch_data(session, id, retry_count=3, delay=1):
 # Loop through all pages, fetching and writing 1000 at a time
 async def main():
     count = PREV_ID
-    while count < PREV_ID + 10 :
+    while count < LAST_ID:
         async with aiohttp.ClientSession() as session:
             # Fetch data for each ID from current to current+1000
             results = await asyncio.gather(
-                *[fetch_data(session, id) for id in range(count, count + 10)]
+                *[fetch_data(session, id) for id in range(count, count + 1000)]
             )
             # Process results after all fetches are complete
             for idx, result in enumerate(results):
