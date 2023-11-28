@@ -3,14 +3,14 @@ import json
 import aiohttp
 from aiohttp import ClientError
 import asyncio
-# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) FOR WINDOWS ONLY
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) #FOR WINDOWS ONLY
 import requests
 
 LAST_ID = 179135
-PREV_ID = 179135
+PREV_ID = 165557
 
 base_url = "https://nuforc.org/sighting/?id="
-file_path = "Scrape2.json"
+file_path = "test.json"
 
 # open specified json file as data_dict
 try:
@@ -46,15 +46,15 @@ async def fetch_data(session, id, retry_count=3, delay=1):
 # Loop through all pages, fetching and writing 1000 at a time
 async def main():
     count = PREV_ID
-    while count < LAST_ID :
+    while count < PREV_ID + 10 :
         async with aiohttp.ClientSession() as session:
             # Fetch data for each ID from current to current+1000
             results = await asyncio.gather(
-                *[fetch_data(session, id) for id in range(count, count + 1000)]
+                *[fetch_data(session, id) for id in range(count, count + 10)]
             )
             # Process results after all fetches are complete
             for idx, result in enumerate(results):
-                    print(idx)
+                    print(idx + PREV_ID)
                     new_entry = str(result.find("div", class_="content-area"))
                     new_imgs = result.find_all("img")
                     img_links = []
@@ -65,8 +65,9 @@ async def main():
                     for i in range(1, len(new_imgs)):
                         img = str(new_imgs[i]).split("src=")[1].split('"')[1]
                         img_links.append(img)
-                    # new_vids = soup.find_all("video")
-                    # vid_links = []
+                    new_vids = result.find_all("div", class_="content-area")
+                    print(new_vids)
+                    vid_links = []
                     # for i in range(0, len(new_vids)):
                     #     vid = str(new_vids[i]).split("src=")[1].split('"')[1]
                     #     print(vid)
@@ -84,9 +85,9 @@ async def main():
                             "observers": new_entry.split("<b>No of observers:</b> ")[1].split("<br/>")[0] if "No of observers" in new_entry else "",
                             "reported": new_entry.split("<b>Reported:</b> ")[1].split("<br/>")[0] if "Reported" in new_entry else "",
                             "posted": new_entry.split("<b>Posted:</b> ")[1].split("<br/>")[0] if "Posted" in new_entry else "",
-                            "characteristics": new_entry.split("<b>Characteristics:</b> ")[1].split("<p style=\"color: white;")[0].replace("<br/>", ". ").replace("<br>", ". ") if "Characteristics" in new_entry else "" ,   
+                            "characteristics": new_entry.split("<b>Characteristics:</b> ")[1].split("<p style=\"color: white;")[0].split("<img")[0].replace("<br/>", ". ").replace("<br>", ". ") if "Characteristics" in new_entry else "" ,   
                             "images": img_links,
-                            # "videos": vid_links,
+                            "videos": vid_links,
                             }
                     # ignore and move on if something goes wrong
                     except:

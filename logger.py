@@ -43,13 +43,21 @@ data_objs = data["data"]
 #         perCtry[ctry].append(obj)
 #     else:
 #         perCtry[ctry]=[obj]
-#  
-# for sighting in perCtry[" Italy"]:
+ 
+# for sighting in perCtry[" Spain"]:
 #          print(f'{sighting["id"]}')
 
 # Get amount with images
-img_count = 0
+# img_count = 0
+# for obj in data_objs:
+#     if len(obj["images"]) > 0:
+#         img_count += 1      
+# print(img_count)
+
+# Get IDs of sightings with videos
+vid_ids = []
 for obj in data_objs:
-    if len(obj["images"]) > 0:
-        img_count += 1      
-print(img_count)
+    if  "#museai-player" in obj["characteristics"]:
+        vid_ids.append(obj["id"])
+with open("vid_list.txt", "w") as outfile:
+    json.dump(vid_ids, outfile, indent=4)   
