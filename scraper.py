@@ -3,11 +3,13 @@ import json
 import aiohttp
 from aiohttp import ClientError
 import asyncio
+import datetime
+import math
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) #FOR WINDOWS ONLY
 
 LAST_ID = 179135
 PREV_ID = 0
-BATCH_SIZE = 500
+BATCH_SIZE = 50
 
 base_url = "https://nuforc.org/sighting/?id="
 file_path = "test.json"
@@ -46,7 +48,8 @@ async def fetch_data(session, id, retry_count=3, delay=1):
 
 # Loop through all pages, fetching and writing 1000 at a time
 async def main():
-    count = PREV_ID
+    start_time = datetime.datetime.now()
+    count = 179134
     while count < LAST_ID:
         async with aiohttp.ClientSession() as session:
             # Fetch data for each ID from current to current+1000
@@ -108,6 +111,8 @@ async def main():
             json.dump(data_dict, outfile, indent=4)   
         count+= BATCH_SIZE
         print(f"Read up to {count}")
+    total = (datetime.datetime.now().timestamp() - start_time.timestamp())
+    print(f"Scrape complete in {math.floor(total/60)} minutes and {math.floor(total%60)} seconds.")
                     
 
 

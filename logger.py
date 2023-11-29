@@ -80,14 +80,14 @@ data_objs = data["data"]
 #      print(f"{key}: {value}")
 
 # # Print observers hash
-obs_map = {}
-for obj in data_objs:
-    observers = obj["observers"].lower()
-    if observers in obs_map.keys():
-        obs_map[observers]+=1
-    else:
-        obs_map[observers]=1
-obs_map = dict(sorted(obs_map.items(), key=lambda item: item[1]))
+# obs_map = {}
+# for obj in data_objs:
+#     observers = obj["observers"].lower()
+#     if observers in obs_map.keys():
+#         obs_map[observers]+=1
+#     else:
+#         obs_map[observers]=1
+# obs_map = dict(sorted(obs_map.items(), key=lambda item: item[1]))
 
-for key, value in obs_map.items():    
-     print(f"{key}: {value}")
+# for key, value in obs_map.items():    
+#      print(f"{key}: {value}")
