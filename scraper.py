@@ -7,6 +7,7 @@ asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) #FOR WIN
 
 LAST_ID = 179135
 PREV_ID = 0
+BATCH_SIZE = 500
 
 base_url = "https://nuforc.org/sighting/?id="
 file_path = "test.json"
@@ -18,7 +19,8 @@ try:
 except FileNotFoundError:
     data_dict = {"data": []}
 
-
+def remove_leading_newlines(string):
+    return string.lstrip('\n \r\t')
 
 # Function to collect html from one page
 async def fetch_data(session, id, retry_count=3, delay=1):
@@ -44,12 +46,12 @@ async def fetch_data(session, id, retry_count=3, delay=1):
 
 # Loop through all pages, fetching and writing 1000 at a time
 async def main():
-    count = 178054
-    while count < 178055:
+    count = PREV_ID
+    while count < LAST_ID:
         async with aiohttp.ClientSession() as session:
             # Fetch data for each ID from current to current+1000
             results = await asyncio.gather(
-                *[fetch_data(session, id) for id in range(count, count + 10)]
+                *[fetch_data(session, id) for id in range(count, count + BATCH_SIZE)]
             )
             # Process results after all fetches are complete
             for idx, result in enumerate(results):
@@ -91,16 +93,20 @@ async def main():
                     # ignore and move on if something goes wrong
                     except:
                         continue
-                    # If it has an occurred date and location, add it to array of dicts
+                    
+                    # extra parsing on characteristics field
                     if "<b>Explanation:</b>" in new_dict["characteristics"]:
                         new_dict["characteristics"] = " ".join(new_dict["characteristics"][20:].split("\n")[1:])
+                    new_dict["characteristics"] = remove_leading_newlines(new_dict["characteristics"])
+                 
+                    # If it has an occurred date and location, add it to array of dicts   
                     if new_dict["occurred"] != "" and new_dict["location"] != ", , ":
                         data_dict["data"].append(new_dict)
 
         #   Write entire data_dict object to json (including the original data from import)
         with open(file_path, "w") as outfile:
             json.dump(data_dict, outfile, indent=4)   
-        count+=1000
+        count+= BATCH_SIZE
         print(f"Read up to {count}")
                     
 
@@ -113,9 +119,9 @@ asyncio.run(main())
    
     
 # to do:
-# Almost got unlabelled characteristics. Sometimes Explanation gets in the way
 # Find efficient way to check if ID is already in list (maybe keep it sorted then binary search?)
 
 
 # Convert all duration to int:seconds
 # convert observers to ints
+# make bools or an array for description selections "lights on craft, left a trail, etc."
