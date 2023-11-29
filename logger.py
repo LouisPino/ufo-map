@@ -64,3 +64,30 @@ data_objs = data["data"]
 # write to file if needed
 # # with open("vid_list.txt", "w") as outfile:
 # #     json.dump(vid_ids, outfile, indent=4)   
+
+
+# # Print shapes hash
+# shapes = {}
+# for obj in data_objs:
+#     shape = obj["shape"].lower()
+#     if shape in shapes.keys():
+#         shapes[shape]+=1
+#     else:
+#         shapes[shape]=1
+# shapes = dict(sorted(shapes.items(), key=lambda item: item[1]))
+
+# for key, value in shapes.items():    
+#      print(f"{key}: {value}")
+
+# # Print observers hash
+obs_map = {}
+for obj in data_objs:
+    observers = obj["observers"].lower()
+    if observers in obs_map.keys():
+        obs_map[observers]+=1
+    else:
+        obs_map[observers]=1
+obs_map = dict(sorted(obs_map.items(), key=lambda item: item[1]))
+
+for key, value in obs_map.items():    
+     print(f"{key}: {value}")

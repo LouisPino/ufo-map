@@ -44,12 +44,12 @@ async def fetch_data(session, id, retry_count=3, delay=1):
 
 # Loop through all pages, fetching and writing 1000 at a time
 async def main():
-    count = PREV_ID
-    while count < LAST_ID:
+    count = 178054
+    while count < 178055:
         async with aiohttp.ClientSession() as session:
             # Fetch data for each ID from current to current+1000
             results = await asyncio.gather(
-                *[fetch_data(session, id) for id in range(count, count + 1000)]
+                *[fetch_data(session, id) for id in range(count, count + 10)]
             )
             # Process results after all fetches are complete
             for idx, result in enumerate(results):
@@ -64,9 +64,8 @@ async def main():
                     for i in range(1, len(new_imgs)):
                         img = str(new_imgs[i]).split("src=")[1].split('"')[1]
                         img_links.append(img)
-                    new_vids = result.find_all("div", class_="content-area")
-                    print(new_vids)
-                    vid_links = []
+                    # new_vids = result.find_all("div", class_="content-area")
+                    # vid_links = []
                     # for i in range(0, len(new_vids)):
                     #     vid = str(new_vids[i]).split("src=")[1].split('"')[1]
                     #     print(vid)
@@ -84,14 +83,17 @@ async def main():
                             "observers": new_entry.split("<b>No of observers:</b> ")[1].split("<br/>")[0] if "No of observers" in new_entry else "",
                             "reported": new_entry.split("<b>Reported:</b> ")[1].split("<br/>")[0] if "Reported" in new_entry else "",
                             "posted": new_entry.split("<b>Posted:</b> ")[1].split("<br/>")[0] if "Posted" in new_entry else "",
-                            "characteristics": new_entry.split("<b>Characteristics:</b> ")[1].split("<p style=\"color: white;")[0].split("<img")[0].replace("<br/>", ". ").replace("<br>", ". ") if "Characteristics" in new_entry else "" ,   
+                            "characteristics": new_entry.split("<b>Posted:</b> ")[1].split("<p style=\"color: white;")[0].split("<img")[0].replace("<br/>", "\n").replace("<br>", "\n").replace("<b>Posted:</b> ", "").replace("<b>Characteristics:</b> ", "")[19:],   
+                            "explanation": new_entry.split("<b>Explanation:</b>")[1].split("<br/>")[0] if "Explanation" in new_entry else "",
                             "images": img_links,
-                            "videos": vid_links,
+                            # "videos": vid_links,
                             }
                     # ignore and move on if something goes wrong
                     except:
                         continue
                     # If it has an occurred date and location, add it to array of dicts
+                    if "<b>Explanation:</b>" in new_dict["characteristics"]:
+                        new_dict["characteristics"] = " ".join(new_dict["characteristics"][20:].split("\n")[1:])
                     if new_dict["occurred"] != "" and new_dict["location"] != ", , ":
                         data_dict["data"].append(new_dict)
 
@@ -111,7 +113,9 @@ asyncio.run(main())
    
     
 # to do:
-# get videos
+# Almost got unlabelled characteristics. Sometimes Explanation gets in the way
 # Find efficient way to check if ID is already in list (maybe keep it sorted then binary search?)
-# Some don't have a characteristics title but do have descriptions, get this somehow
-# Missed a lot of <img> tags
+
+
+# Convert all duration to int:seconds
+# convert observers to ints
