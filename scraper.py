@@ -5,10 +5,10 @@ from aiohttp import ClientError
 import asyncio
 import datetime
 import math
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) #FOR WINDOWS ONLY
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) #FOR WINDOWS ONLY
 
-LAST_ID = 179135
-PREV_ID = 0
+LAST_ID = 179773
+PREV_ID = 179773
 BATCH_SIZE = 1000
 
 base_url = "https://nuforc.org/sighting/?id="
@@ -49,7 +49,7 @@ async def fetch_data(session, id, retry_count=3, delay=1):
 # Loop through all pages, fetching and writing 1000 at a time
 async def main():
     start_time = datetime.datetime.now()
-    count = 179134
+    count = PREV_ID
     while count < LAST_ID:
         async with aiohttp.ClientSession() as session:
             # Fetch data for each ID from current to current+1000
@@ -69,12 +69,6 @@ async def main():
                     for i in range(1, len(new_imgs)):
                         img = str(new_imgs[i]).split("src=")[1].split('"')[1]
                         img_links.append(img)
-                    # new_vids = result.find_all("div", class_="content-area")
-                    # vid_links = []
-                    # for i in range(0, len(new_vids)):
-                    #     vid = str(new_vids[i]).split("src=")[1].split('"')[1]
-                    #     print(vid)
-                    #     vid_links.append(vid)
                     
                     # create new dict with all the info from the html
                     try:
@@ -91,7 +85,6 @@ async def main():
                             "characteristics": new_entry.split("<b>Posted:</b> ")[1].split("<p style=\"color: white;")[0].split("<img")[0].replace("<br/>", "\n").replace("<br>", "\n").replace("<b>Posted:</b> ", "").replace("<b>Characteristics:</b> ", "")[19:],   
                             "explanation": new_entry.split("<b>Explanation:</b>")[1].split("<br/>")[0] if "Explanation" in new_entry else "",
                             "images": img_links,
-                            # "videos": vid_links,
                             }
                     # ignore and move on if something goes wrong
                     except:
@@ -113,20 +106,6 @@ async def main():
         print(f"Read up to {count}")
     total = (datetime.datetime.now().timestamp() - start_time.timestamp())
     print(f"Scrape complete in {math.floor(total/60)} minutes and {math.floor(total%60)} seconds.")
-                    
-
-
-
-
 
 
 asyncio.run(main()) 
-   
-    
-# to do:
-# Find efficient way to check if ID is already in list (maybe keep it sorted then binary search?)
-
-
-# Convert all duration to int:seconds
-# convert observers to ints
-# make bools or an array for description selections "lights on craft, left a trail, etc."

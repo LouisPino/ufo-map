@@ -1,5 +1,5 @@
 # UFO DATA WEB SCRAPER
-#### Video Demo:  <URL HERE>
+#### Video Demo:  <https://youtu.be/1uwH6bPe1wo>
 #### Description:
 
 This application is a web scraper design to gather and compile information from the NUFORC website. It uses asynchronous HTTP requests to process 1000 pages at a time (which seems to be the maximum possible before being throttled by the site itself) and store them in a json file. This file contains information on each sighting including date, time, location, description, craft shape, and any included images. Because videos are hosted by a third party, they are blocked from the scraper. Therefore, vid_scraper.py is responsible for determining which sightings include videos to keep track of their ID numbers. Lastly, logger.py includes some preliminary parsing functions, helping to display the data in some more digestible forms such as amount of sightings per country, amount of sightings for each individual craft shape reported, or a list of all sightings in a specified location. Each of these functions can be called by running logger.py with one of the predetermined command line arguments.

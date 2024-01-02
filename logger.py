@@ -34,6 +34,7 @@ if sys.argv[1] == "country":
         else:
             perCtry[ctry]=1
     perCtry = dict(sorted(perCtry.items(), key=lambda item: item[1]))
+    print(perCtry)
 
 
 # Print all IDs of sightings from selected country
