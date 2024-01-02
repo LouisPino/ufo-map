@@ -9,7 +9,7 @@ asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) #FOR WIN
 
 LAST_ID = 179135
 PREV_ID = 0
-BATCH_SIZE = 50
+BATCH_SIZE = 1000
 
 base_url = "https://nuforc.org/sighting/?id="
 file_path = "test.json"

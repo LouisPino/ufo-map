@@ -1,17 +1,9 @@
 import json
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import re
-
 
 video_ids = []
 
 with open("vid_list.txt") as vid_list:
     video_ids = json.load(vid_list)
-
-
-
-
 
 # Modify json to track which videos have (1) videos or not (0)
 
@@ -29,6 +21,4 @@ with open("Scrape2.json", "w") as outfile:
 
 
 
-
-
-# videos are blocked by Muse.ai video host. :( Will just have to link to pages that have videos :(
+# videos are blocked by Muse.ai video hosting service. :( Will just have to link to pages that have videos :(

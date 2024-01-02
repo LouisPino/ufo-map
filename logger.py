@@ -70,8 +70,6 @@ if sys.argv[1] == "video":
     print(vid_ids) 
 
 
-
-
 # Print shapes map
 # Usage: python3 logger.py shape
 
@@ -91,7 +89,7 @@ if sys.argv[1] == "shape":
 
 
 
-# # Print observers map
+# Print observers map
 # Usage: python3 logger.py observer
 if sys.argv[1] == "observer":
     obs_map = {}
